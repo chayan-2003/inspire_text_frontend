@@ -30,9 +30,9 @@ const Navbar = () => {
         try {
             await axios.post( `${API_URL}/api/users/logout`, {}, { withCredentials: true });
             console.log('Details sent to server');
-            isAuthenticated(false); // Update authentication state
-            navigate('/login'); // Redirect to login page
             logout(); // Update auth state
+            navigate('/login'); // Redirect to login page
+         
         } catch (error) {
             console.error('Error logging out:', error);
         }
