@@ -29,7 +29,6 @@ const Navbar = () => {
         e.preventDefault();
         try {
             await axios.post( `${API_URL}/api/users/logout`, {}, { withCredentials: true });
-            isAuthenticated(false); // Update auth state
             console.log('Details sent to server');
             navigate('/login'); // Redirect to login page
             logout(); // Update auth state
