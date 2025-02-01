@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { Box, Container, Typography, TextField, Button, Paper } from '@mui/material';
 import Navbar from './Navbar';
 import { AuthContext } from '../authContext/authContext';
 
@@ -59,57 +58,44 @@ const Summarizer = () => {
   return (
     <>
       <Navbar />
-      <Box className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-16 relative">
-        <Typography variant="body2" className="text-center mb-4 text-xs absolute top-2 left-1/2 transform -translate-x-1/2">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-16 relative">
+        <p className="text-center mb-4 text-xs absolute top-2 left-1/2 transform -translate-x-1/2">
           Remaining Credits: {remainingCredits}
-        </Typography>
-        <Container maxWidth="md">
-          <Paper elevation={3} className="p-6">
-            <Typography variant="h4" className="text-center mb-6">
-              Text Summarizer
-            </Typography>
-            <TextField
-              label="Enter text to summarize"
-              multiline
-              rows={6}
-              variant="outlined"
-              fullWidth
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              className="mb-4"
-            />
-            <TextField
-              label="Number of words"
-              type="number"
-              variant="outlined"
-              fullWidth
-              value={words}
-              onChange={(e) => setWords(e.target.value)}
-              className="mb-4"
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSummarize}
-              disabled={loading || remainingCredits <= 0} // Disable if no credits left
-              className="w-full"
-            >
-              {loading ? 'Summarizing...' : 'Summarize Text'}
-            </Button>
-            {error && (
-              <Typography color="error" className="mt-4 text-center">
-                {error}
-              </Typography>
-            )}
-            {summary && (
-              <Box className="mt-6">
-                <Typography variant="h6">Summary:</Typography>
-                <Typography>{summary}</Typography>
-              </Box>
-            )}
-          </Paper>
-        </Container>
-      </Box>
+        </p>
+        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+          <h2 className="text-2xl font-bold text-center mb-6">Text Summarizer</h2>
+          <textarea
+            className="w-full p-4 border border-gray-300 rounded-lg mb-4"
+            rows="6"
+            placeholder="Enter text to summarize"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          ></textarea>
+          <input
+            type="number"
+            className="w-full p-4 border border-gray-300 rounded-lg mb-4"
+            placeholder="Number of words"
+            value={words}
+            onChange={(e) => setWords(e.target.value)}
+          />
+          <button
+            onClick={handleSummarize}
+            disabled={loading || remainingCredits <= 0}
+            className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+          >
+            {loading ? 'Summarizing...' : 'Summarize Text'}
+          </button>
+          {error && (
+            <p className="mt-4 text-red-500 text-center">{error}</p>
+          )}
+          {summary && (
+            <div className="mt-6">
+              <h3 className="text-xl font-semibold">Summary:</h3>
+              <p className="mt-2 p-4 bg-gray-100 rounded-lg">{summary}</p>
+            </div>
+          )}
+        </div>
+      </div>
     </>
   );
 };

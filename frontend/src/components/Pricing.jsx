@@ -1,26 +1,23 @@
 import React, { useContext } from 'react';
-import { Box, Container, Typography, Paper, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { PlanContext } from '../context/PlanContext';
-import { motion } from 'framer-motion';
 import Navbar from './Navbar';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const plans = [
   {
     tier: 'Basic',
-    price: 29,
+    price: 10,
     features: ['20 Credits', 'Basic Support', 'Limited Access'],
   },
   {
     tier: 'Pro',
-    price: 59,
+    price: 20,
     features: ['100 Credits', 'Priority Support', 'Advanced Features'],
-    popular: true,
   },
   {
     tier: 'Premium',
-    price: 99,
+    price: 35,
     features: [
       '200 Credits',
       'All Pro Features',
@@ -34,101 +31,49 @@ function Pricing() {
   const navigate = useNavigate();
   const { setPlan } = useContext(PlanContext);
 
-  const clicked = (tier) => () => {
-    if (tier === 'Basic') {
-      setPlan('basic');
-      navigate('/payment');
-    } else if (tier === 'Pro') {
-      setPlan('pro');
-      navigate('/payment');
-    } else {
-      setPlan('premium');
-      navigate('/payment');
-    }
+  const handlePlanSelection = (tier) => () => {
+    setPlan(tier.toLowerCase());
+    navigate('/payment');
   };
 
   return (
     <>
       <Navbar />
-      <Box className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 min-h-screen py-16">
-        <Container maxWidth="lg">
-          <Typography
-            variant="h3"
-            className="text-center font-bold mb-10 text-white"
-            style={{ position: 'relative', top: '-20px' }} // Adjust this value as needed
-          >
+      <div className="bg-gradient-to-b from-pink-100 to-white py-12">
+        <div className="container mx-auto text-center">
+          <h3 className="text-4xl font-bold text-gray-800 mb-8">
             Choose Your Plan
-          </Typography>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {plans.map(({ tier, price, features, popular }, idx) => (
-              <motion.div
+          </h3>
+          <div className="flex  flex-wrap gap-20 justify-center">
+            {plans.map(({ tier, price, features }, idx) => (
+              <div
                 key={idx}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                whileHover={{
-                  scale: 1.05,
-                  rotateY: 5,
-                  transformPerspective: 1000,
-                }}
+                className="w-full md:w-1/4 bg-white rounded-lg shadow-lg p-3 transform transition-transform duration-300 hover:scale-105"
               >
-                <Paper
-                  elevation={popular ? 12 : 4}
-                  className={`p-6 relative transform transition-all duration-300 ${
-                    popular
-                      ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white'
-                      : 'bg-white'
-                  }`}
-                  sx={{
-                    borderRadius: '20px',
-                    height: '100%',
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
+                <h5 className="text-2xl font-bold text-gray-800 mb-4">{tier}</h5>
+                <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                  ${price}
+                  <span className="text-sm text-gray-600">/one-time</span>
+                </h3>
+                <ul className="text-left mb-6">
+                  {features.map((feat, i) => (
+                    <li key={i} className="flex items-center mb-2">
+                      <CheckCircleIcon className="text-pink-500 mr-2" />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={handlePlanSelection(tier)}
+                  className="bg-pink-500 text-white py-2 px-4 rounded-full hover:bg-pink-600 transition duration-300"
                 >
-                  {popular && (
-                    <div className="absolute top-0 right-0 bg-yellow-400 text-xs px-3 py-1 rounded-bl-lg">
-                      Most Popular
-                    </div>
-                  )}
-                  <Typography variant="h5" className="mb-4 font-bold">
-                    {tier}
-                  </Typography>
-                  <Typography variant="h3" className="mb-6">
-                    ${price}
-                    <span className="text-sm">/one-time</span>
-                  </Typography>
-                  <ul className="space-y-2 mb-6">
-                    {features.map((feat, i) => (
-                      <li key={i} className="flex items-center">
-                        <CheckCircleIcon className="text-green-500 mr-2" />
-                        {feat}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    onClick={clicked(tier)}
-                    variant="contained"
-                    color="primary"
-                    className="w-full py-2"
-                    sx={{
-                      borderRadius: '10px',
-                      py: 1.5,
-                      backgroundColor: 'blue',
-                      color: 'white',
-                      '&:hover': {
-                        backgroundColor: 'primary.dark',
-                      },
-                    }}
-                  >
-                    Get Started
-                  </Button>
-                </Paper>
-              </motion.div>
+                  Get Started
+                </button>
+              </div>
             ))}
           </div>
-        </Container>
-      </Box>
+        </div>
+      </div>
     </>
   );
 }

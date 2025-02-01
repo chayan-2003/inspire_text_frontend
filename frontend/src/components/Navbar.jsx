@@ -1,179 +1,89 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import axios from 'axios';
 import { AuthContext } from '../authContext/authContext';
+
 const Navbar = () => {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
     const { isAuthenticated, logout } = useContext(AuthContext);
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
-
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
     const API_URL = import.meta.env.PROD ? import.meta.env.VITE_API_URL_PROD : import.meta.env.VITE_API_URL_DEV;
+
     const handleLogout = async (e) => {
         e.preventDefault();
         try {
-            await axios.post( `${API_URL}/api/users/logout`, {}, { withCredentials: true });
+            await axios.post(`${API_URL}/api/users/logout`, {}, { withCredentials: true });
             console.log('Details sent to server');
-            navigate('/login'); // Redirect to login page
             logout(); // Update auth state
+            navigate('/login'); // Redirect to login page
         } catch (error) {
             console.error('Error logging out:', error);
         }
     };
 
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component={Link}
-                        to="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
+        <nav className="bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 text-white shadow-md p-4">
+            <div className=" flex items-center justify-between">
+                {/* Logo */}
+                <div className="text-xl font-bold ">
+                    <Link to="/" className="text-white hover:text-indigo-300 transition duration-300">
                         InspireText
-                    </Typography>
-
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            <MenuItem onClick={handleCloseNavMenu} component={Link} to="/">
-                                <Typography textAlign="center">Home</Typography>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu} component={Link} to="/dashboard">
-                                <Typography textAlign="center">Dashboard</Typography>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu} component={Link} to="/pricing">
-                                <Typography textAlign="center">Pricing</Typography>
-                            </MenuItem>
-                            {isAuthenticated ? (
-                                <MenuItem onClick={handleLogout}>
-                                    <Typography textAlign="center">Logout</Typography>
-                                </MenuItem>
-                            ) : (
-                                <MenuItem onClick={handleCloseNavMenu} component={Link} to="/login">
-                                    <Typography textAlign="center">Login</Typography>
-                                </MenuItem>
-                            )}
-                        </Menu>
-                    </Box>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component={Link}
-                        to="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        InspireText
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        <Button
-                            component={Link}
-                            to="/"
-                            onClick={handleCloseNavMenu}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
-                        >
-                            Home
-                        </Button>
-                        <Button
-                            component={Link}
-                            to="/dashboard"
-                            onClick={handleCloseNavMenu}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
-                        >
-                            Dashboard
-                        </Button>
-                        <Button
-                            component={Link}
-                            to="/pricing"
-                            onClick={handleCloseNavMenu}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
-                        >
-                            Pricing
-                        </Button>
-                    </Box>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        {isAuthenticated ? (
-                            <Button
-                                onClick={handleLogout}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                Logout
-                            </Button>
+                    </Link>
+                </div>
+                
+                {/* Desktop Navigation */}
+                <div className="hidden md:flex space-x-4 items-center ml-auto">
+                    <Link to="/" className="hover:text-indigo-300 transition duration-300">Home</Link>
+                    <Link to="/dashboard" className="hover:text-indigo-300 transition duration-300">Dashboard</Link>
+                    <Link to="/pricing" className="hover:text-indigo-300 transition duration-300">Pricing</Link>
+                    {isAuthenticated ? (
+                        <button 
+                            onClick={handleLogout} 
+                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300">
+                            Logout
+                        </button>
+                    ) : (
+                        <Link to="/login" className="hover:text-indigo-300 transition duration-300">Login</Link>
+                    )}
+                </div>
+                
+                {/* Mobile Hamburger Icon */}
+                <div className="md:hidden flex items-center">
+                    <button 
+                        onClick={() => setIsMenuOpen(!isMenuOpen)} 
+                        className="text-white focus:outline-none">
+                        {!isMenuOpen ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
                         ) : (
-                            <Button
-                                component={Link}
-                                to="/login"
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                Login
-                            </Button>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                         )}
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+                <div className="md:hidden bg-purple-700 text-white p-4 space-y-4">
+                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="block hover:text-indigo-300 transition duration-300">Home</Link>
+                    <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="block hover:text-indigo-300 transition duration-300">Dashboard</Link>
+                    <Link to="/pricing" onClick={() => setIsMenuOpen(false)} className="block hover:text-indigo-300 transition duration-300">Pricing</Link>
+                    {isAuthenticated ? (
+                        <button 
+                            onClick={(e) => { handleLogout(e); setIsMenuOpen(false); }} 
+                            className="block w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300">
+                            Logout
+                        </button>
+                    ) : (
+                        <Link to="/login" onClick={() => setIsMenuOpen(false)} className="block hover:text-indigo-300 transition duration-300">Login</Link>
+                    )}
+                </div>
+            )}
+        </nav>
     );
 };
 
